@@ -1,7 +1,3 @@
-library(stringr)
-library(tidyverse)
-
-
 # POX-C calculations and Analysis
 
 ## Emma Link, last updated 3/30/2022
@@ -19,14 +15,23 @@ library(tidyverse)
 ### 3) Calculate amount of POX-C
 ### 4) Visualizations and statistical analysis 
 
+library(stringr)
+library(tidyverse)
+library(broom)
 
   
 ## 1) Merge plate reads, PlateMetadata, and sample Metadata (weights and notes from assay)
 
 ### First, we're going to save all of your datasets under a different name so you don't have to change names throughout this script.
-RunData <- *insert your run dataset here*
-RunMap <- *insert your plate map here*
-RunMedata <- *insert your sample metadata here*
+### Currently is set up to run with the example datasets. You'll have to change the string to set your wd 
+setwd("/.SEECRS-POX-C")
+RunData <- read.csv("./Data/ExampleRawData")
+#For some reason the example file is reading in a random first column, just delete it, but you shouldn't do this with your data probably 
+RunData <- RunData[,-c(1)]
+RunMap <- read.csv("./Data/ExamplePlateMap")
+RunMap <- RunMap[,-c(1)]
+
+#RunMedata <- *insert your sample metadata here*
 
 ### First we need to pull out the batch number from the plate name of both plate and metadata files
 ### depending on how you've named your files, you may need to pull a different string 
@@ -113,11 +118,15 @@ RunData_final <- distinct(RunData_merged[,-c(2,3)])
 
 view(RunData_final)
 
-### Do any cleanup of the Plot names that you need to do (for example, I need to pull the depth indicators out of the names so it's not repeat info from depth column)
+### Do any cleanup of the dataset that you need
+## for examples, my Plot names need cleanup; I need to pull the depth indicators out of the names
 ###I'm going to do this by truncating the length of the plot name to 3 
 RunData_final$Plot <- substr(RunData_final$Plot, 1,3)
 
+### Save a csv copy of your dataset at this point - you're done with calculations! 
+### make sure you update the location and name you want to write to
+write.csv(RunData_final, "./Data/ExampleFinalDataset_2021")
 
 ## 4) Visualizations and statistical analysis
 ### This is Emma's pipeline, doesn't necessarily have to be your pipeline 
-###Currently set up for PARCE which is a blocked experiment, hence block effect investigation 
+### Currently set up for PARCE which is a blocked experiment, hence block effect investigation 
